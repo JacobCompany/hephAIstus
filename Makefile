@@ -1,8 +1,10 @@
 .PHONY: ruff create_models
 
+CMD:=poetry run
+
 ruff:
-	ruff check --fix src
-	ruff format src
+	$(CMD) ruff check --fix src
+	$(CMD) ruff format src
 
 create_models:
 	ollama create devops_engineer -f ./src/hephaestus/models/Modelfile_devops_engineer
