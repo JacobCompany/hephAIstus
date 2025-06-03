@@ -10,12 +10,9 @@ def hammer(model_version: str = "devops_engineer"):
     log = []
 
     try:
-        response: ChatResponse = chat(model=model_version, messages=[
-            {
-                "role": "user",
-                "content": query
-            }
-        ])
+        response: ChatResponse = chat(
+            model=model_version, messages=[{"role": "user", "content": query}]
+        )
     except ResponseError:
         print(
             "Model ('{0}') was not found, please provide a different model.".format(
@@ -23,4 +20,6 @@ def hammer(model_version: str = "devops_engineer"):
             )
         )
     else:
+        log.append("{0}\nQuery: {1}".format("-" * 15, query))
+        log.append(response.message.content)
         print(response.message.content)
