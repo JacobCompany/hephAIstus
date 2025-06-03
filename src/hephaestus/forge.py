@@ -1,4 +1,5 @@
 import random
+from datetime import datetime
 
 from gpt4all import GPT4All
 
@@ -42,9 +43,12 @@ def forge(model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
 
         # Save log
         if input("Save log (Y/N)? ").lower() == "y":
-            save_loc = input("Save location: ")
-            while not save_loc.endswith(".txt"):
-                save_loc = input("Save location must be .txt, not {0}\nSave location: ".format(save_loc))
+            save_loc = input("Save location (leave blank for auto generated location): ")
+            while len(save_loc) > 0 and not save_loc.endswith(".txt"):
+                save_loc = input(
+                    "Save location must be .txt, not {0}\nSave location (leave blank for auto generated location): ".format(save_loc))
+            if len(save_loc) == 0:
+                save_loc = "{0}.txt".format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S"))
             with open(save_loc, "w") as outfile:
                 outfile.write("\n".join(log))
                 outfile.close()
