@@ -1,5 +1,14 @@
 # Define exit conditions
-exit_conditions = ["exit", "goodbye", "bye", "good bye", "see ya", "q", "quit", "hasta la vista"]
+exit_conditions = [
+    "exit",
+    "goodbye",
+    "bye",
+    "good bye",
+    "see ya",
+    "q",
+    "quit",
+    "hasta la vista"
+]
 
 # Define waiting messages
 waiting_messages = [
