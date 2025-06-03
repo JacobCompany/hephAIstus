@@ -13,7 +13,6 @@ def forge(model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
     """
     # Get user's query
     query = input("Query: ")
-    print("Generating response...")
 
     # Setup log
     log = []
@@ -26,14 +25,17 @@ def forge(model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
     else:
         with model.chat_session():
             while query.lower() not in exit_conditions:
+                # Save user query
+                log.append("{0}\nQuery: {1}".format("-" * 15, query))
+
                 # Get response from model
-                response = model.generate(query, max_tokens=1024)
+                print("Generating response...")
+                response = model.generate(query, max_tokens=1024) + "\n"
                 log.append(response)
                 print(response)
 
                 # Get user's query
                 query = input("Query: ")
-                print("Generating response...")
 
         if input("Save log (Y/N)? ").lower() == "y":
             save_loc = input("Save location: ")
