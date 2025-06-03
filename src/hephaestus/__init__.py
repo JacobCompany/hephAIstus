@@ -7,7 +7,7 @@ exit_conditions = [
     "see ya",
     "q",
     "quit",
-    "hasta la vista"
+    "hasta la vista",
 ]
 
 # Define waiting messages
@@ -19,16 +19,16 @@ waiting_messages = [
     "Running the permutations",
     "Beep boop",
     "Getting response",
-    "Hold your horses"
-    "Hey! I'm working here",
+    "Hold your horsesHey! I'm working here",
     "Is that a bird? Is that a plane? No! It's your response",
     "I'll be back",
     "Thinking really hard",
-    "Waiting for Hermes to return"
+    "Waiting for Hermes to return",
 ]
+
+# Import functions
+from .forge import forge  # noqa: E402
 
 # Version
 __version__ = "0.1.0"
-
-# Import functions
-from .forge import forge
+__all__ = [forge]
