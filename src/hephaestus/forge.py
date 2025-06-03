@@ -1,7 +1,8 @@
+import random
+
 from gpt4all import GPT4All
 
-# Define exit conditions
-exit_conditions = ["exit", "goodbye", "bye", "see ya"]
+from . import exit_conditions, waiting_messages
 
 
 def forge(model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
@@ -31,7 +32,7 @@ def forge(model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
                 log.append("{0}\nQuery: {1}".format("-" * 15, query))
 
                 # Get response from model
-                print("Generating response...")
+                print("{0}...".format(random.choice(waiting_messages)))
                 response = model.generate(query, max_tokens=1024) + "\n"
                 log.append(response)
                 print(response)
@@ -48,7 +49,3 @@ def forge(model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
                 outfile.write("\n".join(log))
                 outfile.close()
                 print("Saved log to {0}".format(save_loc))
-
-
-if __name__ == "__main__":
-    forge()
