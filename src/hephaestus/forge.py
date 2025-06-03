@@ -13,12 +13,6 @@ def forge(model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
     :param model_version:
     str: The model to use in the query
     """
-    # Get user's query
-    query = input("Query: ")
-
-    # Setup logs
-    logs = []
-
     # Initialize model
     try:
         model = GPT4All(model_version)
@@ -29,6 +23,12 @@ def forge(model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
             )
         )
     else:
+        # Get user's query
+        query = input("Query: ")
+
+        # Setup logs
+        logs = []
+
         # Open up chat session
         with model.chat_session():
             # Check that user doesn't want to exit
