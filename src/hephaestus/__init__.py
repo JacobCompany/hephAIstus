@@ -27,6 +27,7 @@ waiting_messages = [
 ]
 
 from .forge import forge  # noqa: E402
+from .hammer import hammer  # noqa: E402
 
 __version__ = "0.1.0"
-__all__ = [forge]
+__all__ = [forge, hammer]

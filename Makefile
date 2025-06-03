@@ -6,3 +6,4 @@ ruff:
 
 create_models:
 	ollama create devops_engineer -f ./src/hephaestus/models/Modelfile_devops_engineer
+	ollama rm codellama
