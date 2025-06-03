@@ -32,6 +32,7 @@ hammer()
 This will then start a conversation with an AI bot. You can specify the AI model to use with the `model_version` parameter in `forge`. If no
 model is specified, then it will use the default.
 
-To use one of the provided AI models, run `make create_models` and all relevant models will be initialized.
+To use one of the provided AI models (found in `src/hephaestus/models`), run `make create_models` and all relevant models will be
+initialized.
 
 After the conversation is finished, the user can save the results to a text file.
