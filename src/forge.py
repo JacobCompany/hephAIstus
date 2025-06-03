@@ -20,3 +20,6 @@ def forge(model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
 
 if __name__ == "__main__":
     forge()
+
+    while input("\nAsk another query (Y/N)? ").lower() == "y":
+        forge()
