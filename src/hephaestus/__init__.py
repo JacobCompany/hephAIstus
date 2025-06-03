@@ -1,4 +1,4 @@
-# Define exit conditions
+# Define exit conditions for all functions
 exit_conditions = [
     "exit",
     "goodbye",
@@ -10,7 +10,7 @@ exit_conditions = [
     "hasta la vista",
 ]
 
-# Define waiting messages
+# Define waiting messages for all functions
 waiting_messages = [
     "You sure? Ok then",
     "Working on it",
@@ -26,9 +26,7 @@ waiting_messages = [
     "Waiting for Hermes to return",
 ]
 
-# Import functions
 from .forge import forge  # noqa: E402
 
-# Version
 __version__ = "0.1.0"
 __all__ = [forge]
