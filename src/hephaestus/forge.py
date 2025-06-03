@@ -16,8 +16,8 @@ def forge(model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
     # Get user's query
     query = input("Query: ")
 
-    # Setup log
-    log = []
+    # Setup logs
+    logs = []
 
     # Initialize model
     try:
@@ -34,19 +34,20 @@ def forge(model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
             # Check that user doesn't want to exit
             while query.lower() not in exit_conditions:
                 # Save user query
-                log.append("{0}\nQuery: {1}".format("-" * 15, query))
+                logs.append("{0}\nQuery: {1}".format("-" * 15, query))
 
                 # Get response from model
                 print("{0}...".format(random.choice(waiting_messages)))
                 response = model.generate(query, max_tokens=1024) + "\n"
-                log.append(response)
+                logs.append(response)
                 print(response)
 
                 # Get user's query
                 query = input("Query: ")
 
-        # Save log
-        if input("Save log (Y/N)? ").lower() == "y":
+        # Save logs
+        if input("Save logs (Y/N)? ").lower() == "y":
+            # Get save location
             save_loc = input(
                 "Save location (leave blank for auto generated location): "
             )
@@ -60,7 +61,9 @@ def forge(model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
                 save_loc = "{0}.txt".format(
                     datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
                 )
+
+            # Write logs
             with open(save_loc, "w") as outfile:
-                outfile.write("\n".join(log))
+                outfile.write("\n".join(logs))
                 outfile.close()
-                print("Saved log to {0}".format(save_loc))
+                print("Saved logs to {0}".format(save_loc))
