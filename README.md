@@ -6,7 +6,7 @@ potential data leak.
 
 These models use `gpt4all` and `ollama`.
 
-## Haphaestus' Forge
+## Hephaestus' Forge
 
 The first AI model is `forge` and it uses `gpt4all`. To use it, simply run the following commands in a Python terminal.
 
@@ -20,7 +20,7 @@ model is specified, then it will use the default.
 
 After the conversation is finished, the user can save the results to a text file.
 
-## Haphaestus' Hammer
+## Hephaestus' Hammer
 
 Alternatively, you can use `ollama` with `hammer`. To use it, simply run the following commands in a Python terminal.
 
