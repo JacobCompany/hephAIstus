@@ -10,7 +10,7 @@ These models use `gpt4all` and `ollama`.
 
 The first AI model is `forge` and it uses `gpt4all`. To use it, simply run the following commands in a Python terminal.
 
-```shell
+```python
 from hephaestus import forge
 forge()
 ```
@@ -24,7 +24,7 @@ After the conversation is finished, the user can save the results to a text file
 
 Alternatively, you can use `ollama` with `hammer`. To use it, simply run the following commands in a Python terminal.
 
-```shell
+```python
 from hephaestus import hammer
 hammer()
 ```
