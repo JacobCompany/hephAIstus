@@ -1,13 +1,38 @@
 import random
 from datetime import datetime
 
+from gpt4all import GPT4All
 from ollama import chat
 from ollama._types import ResponseError
 
-from . import exit_conditions, waiting_messages
+# Define exit conditions for all functions
+exit_conditions = [
+    "exit",
+    "goodbye",
+    "bye",
+    "good bye",
+    "see ya",
+    "q",
+    "quit",
+    "hasta la vista",
+]
 
-
-from gpt4all import GPT4All
+# Define waiting messages for all functions
+waiting_messages = [
+    "You sure? Ok then",
+    "Working on it",
+    "After my smoke break",
+    "I'll get right on that",
+    "Running the permutations",
+    "Beep boop",
+    "Getting response",
+    "Hold your horses",
+    "Hey! I'm working here",
+    "Is that a bird? Is that a plane? No! It's your response",
+    "I'll be back",
+    "Thinking really hard",
+    "Waiting for Hermes to return",
+]
 
 
 class Hephaestus:
@@ -23,6 +48,7 @@ class Hephaestus:
         """
         # Initialize logs
         self.logs = []
+        self.logs_loaded = False
 
     def _reformat_logs(self):
         """
@@ -61,6 +87,21 @@ class Hephaestus:
             outfile.write("\n".join(self.logs))
             outfile.close()
             print("Saved logs to {0}".format(save_loc))
+
+    def _load_logs(self, file_name: str):
+        """
+        Loads logs to be used by ollama
+        """
+        # Reset logs
+        self._reset_logs()
+
+        # Open the log file
+        with open(file_name, "r") as input_file:
+            input_file.read()
+            self.logs = []
+
+        # Set that logs were loaded
+        self.logs_loaded = True
 
     def forge(self, model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
         """
@@ -115,8 +156,9 @@ class Hephaestus:
         # Get user's query
         query = input("Query: ")
 
-        # Reset logs
-        self._reset_logs()
+        # Reset logs if fresh
+        if not self.logs_loaded:
+            self._reset_logs()
 
         # Check that user doesn't want to exit
         while query.lower() not in exit_conditions:
