@@ -91,7 +91,6 @@ class Hephaestus:
 
             # Save logs
             if input("Save logs (Y/N)? ").lower() == "y":
-                self._reformat_logs()
                 self._save_logs()
 
     def hammer(self, model_version: str = "devops_engineer"):
@@ -128,4 +127,5 @@ class Hephaestus:
 
         # Save logs
         if input("Save logs (Y/N)? ").lower() == "y":
+            self._reformat_logs()
             self._save_logs()
