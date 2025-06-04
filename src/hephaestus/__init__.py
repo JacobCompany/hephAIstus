@@ -27,8 +27,7 @@ waiting_messages = [
     "Waiting for Hermes to return",
 ]
 
-from .forge import forge  # noqa: E402
-from .hammer import hammer  # noqa: E402
+from .god_of_forges import Hephaestus  # noqa: E402
 
 __version__ = "0.1.0"
-__all__ = [forge, hammer]
+__all__ = [Hephaestus]

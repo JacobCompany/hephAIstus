@@ -11,8 +11,8 @@ These models use `gpt4all` and `ollama`.
 The first AI model is `forge` and it uses `gpt4all`. To use it, simply run the following commands in a Python terminal.
 
 ```python
-from hephaestus import forge
-forge()
+from hephaestus import Hephaestus
+Hephaestus.forge()
 ```
 
 This will then start a conversation with an AI bot. You can specify the AI model to use with the `model_version` parameter in `forge`. If no
@@ -25,8 +25,8 @@ After the conversation is finished, the user can save the results to a text file
 Alternatively, you can use `ollama` with `hammer`. To use it, simply run the following commands in a Python terminal.
 
 ```python
-from hephaestus import hammer
-hammer()
+from hephaestus import Hephaestus
+Hephaestus.hammer()
 ```
 
 This will then start a conversation with an AI bot. You can specify the AI model to use with the `model_version` parameter in `forge`. If no
