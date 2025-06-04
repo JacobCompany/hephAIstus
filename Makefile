@@ -11,4 +11,5 @@ create_models:
 	ollama rm codellama
 
 	ollama create hephaestus -f ./src/hephaestus/models/Modelfile_hephaestus
+	ollama create mudlark -f ./src/hephaestus/models/Modelfile_mudlark
 	ollama rm llama3.2
