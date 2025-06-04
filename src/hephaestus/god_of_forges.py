@@ -1,13 +1,41 @@
 import random
 from datetime import datetime
 
+from gpt4all import GPT4All
 from ollama import chat
 from ollama._types import ResponseError
 
-from . import exit_conditions, waiting_messages
+# Define exit conditions for all functions
+exit_conditions = [
+    "exit",
+    "goodbye",
+    "bye",
+    "good bye",
+    "see ya",
+    "q",
+    "quit",
+    "hasta la vista",
+]
 
+# Define waiting messages for all functions
+waiting_messages = [
+    "You sure? Ok then",
+    "Working on it",
+    "After my smoke break",
+    "I'll get right on that",
+    "Running the permutations",
+    "Beep boop",
+    "Getting response",
+    "Hold your horses",
+    "Hey! I'm working here",
+    "Is that a bird? Is that a plane? No! It's your response",
+    "I'll be back",
+    "Thinking really hard",
+    "Waiting for Hermes to return",
+]
 
-from gpt4all import GPT4All
+# Define split condition
+new_query_text = "-" * 15
 
 
 class Hephaestus:
@@ -23,6 +51,7 @@ class Hephaestus:
         """
         # Initialize logs
         self.logs = []
+        self.logs_loaded = False
 
     def _reformat_logs(self):
         """
@@ -31,9 +60,12 @@ class Hephaestus:
         # Reformat logs
         logs_formatted = []
         for log in self.logs:
-            if log["role"] == "user":
+            if not isinstance(log, dict) or "role" not in log or "content" not in log:
+                print("Cannot reformat logs")
+                return
+            elif log["role"] == "user":
                 logs_formatted.append(
-                    "{0}\nQuery: {1}".format("-" * 15, log["content"])
+                    "{0}\nQuery: {1}\n{0}".format(new_query_text, log["content"])
                 )
             else:
                 logs_formatted.append(log["content"])
@@ -61,6 +93,41 @@ class Hephaestus:
             outfile.write("\n".join(self.logs))
             outfile.close()
             print("Saved logs to {0}".format(save_loc))
+
+    def load_logs(self, file_name: str):
+        """
+        Loads logs to be used by ollama
+        """
+        # Reset logs
+        self._reset_logs()
+
+        # Initialize logs
+        logs_unformatted = []
+
+        # Open the log file
+        with open(file_name, "r") as input_file:
+            # Read the entire log file
+            logs_file = input_file.read()
+            # Run through each query/response
+            for content in logs_file.split(new_query_text):
+                # Strip content
+                content = content.strip()
+
+                # Ensure there is actually a query/response
+                if len(content) > 0:
+                    # Get role
+                    if content.startswith("Query: "):
+                        role = "user"
+                        content = content.replace("Query: ", "")
+                    else:
+                        role = "assistant"
+
+                    # Add query/response
+                    logs_unformatted.append({"role": role, "content": content})
+
+        # Update logs
+        self.logs = logs_unformatted
+        self.logs_loaded = True
 
     def forge(self, model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
         """
@@ -90,13 +157,15 @@ class Hephaestus:
                 # Check that user doesn't want to exit
                 while query.lower() not in exit_conditions:
                     # Save user query
-                    self.logs.append("{0}\nQuery: {1}".format("-" * 15, query))
+                    self.logs.append(
+                        "{0}\nQuery: {1}\n{0}".format(new_query_text, query)
+                    )
 
                     # Get response from model
                     print("{0}...".format(random.choice(waiting_messages)))
                     response = model.generate(query, max_tokens=1024) + "\n"
                     self.logs.append(response)
-                    print(response)
+                    print("{0}\n{1}".format(new_query_text, response))
 
                     # Get user's query
                     query = input("Query: ")
@@ -115,8 +184,9 @@ class Hephaestus:
         # Get user's query
         query = input("Query: ")
 
-        # Reset logs
-        self._reset_logs()
+        # Reset logs if fresh
+        if not self.logs_loaded:
+            self._reset_logs()
 
         # Check that user doesn't want to exit
         while query.lower() not in exit_conditions:
@@ -138,7 +208,7 @@ class Hephaestus:
                 self.logs.append(
                     {"role": "assistant", "content": response.message.content}
                 )
-                print(response.message.content)
+                print("{0}\n{1}".format(new_query_text, response.message.content))
 
                 # Get user's query
                 query = input("\nQuery: ")

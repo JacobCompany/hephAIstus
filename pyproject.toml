@@ -1,6 +1,6 @@
 [project]
 name = "hephaestus"
-version = "0.1.0"
+version = "0.1.1"
 description = "AI tools and models for DevOps Engineers"
 authors = [
     {name = "JacobCompany",email = "jacob.gross@health-union.com"}
@@ -20,4 +20,5 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.11.12"
+isort = "^6.0.1"
 
