@@ -36,35 +36,31 @@ def hammer(model_version: str = "devops_engineer"):
             # Get user's query
             query = input("\nQuery: ")
 
-            # Save logs
-            if input("Save logs (Y/N)? ").lower() == "y":
-                # Get save location
-                save_loc = input(
-                    "Save location (leave blank for auto generated location): "
+    # Save logs
+    if input("Save logs (Y/N)? ").lower() == "y":
+        # Get save location
+        save_loc = input("Save location (leave blank for auto generated location): ")
+        while len(save_loc) > 0 and not save_loc.endswith(".txt"):
+            save_loc = input(
+                "Save location must be .txt, not {0}\nSave location (leave blank for auto generated location): ".format(
+                    save_loc
                 )
-                while len(save_loc) > 0 and not save_loc.endswith(".txt"):
-                    save_loc = input(
-                        "Save location must be .txt, not {0}\nSave location (leave blank for auto generated location): ".format(
-                            save_loc
-                        )
-                    )
-                if len(save_loc) == 0:
-                    save_loc = "{0}.txt".format(
-                        datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
-                    )
+            )
+        if len(save_loc) == 0:
+            save_loc = "{0}.txt".format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S"))
 
-                # Reformat logs
-                logs_formatted = []
-                for log in logs:
-                    if log["role"] == "user":
-                        logs_formatted.append(
-                            "{0}\nQuery: {1}".format("-" * 15, log["content"])
-                        )
-                    else:
-                        logs_formatted.append(log["content"])
+        # Reformat logs
+        logs_formatted = []
+        for log in logs:
+            if log["role"] == "user":
+                logs_formatted.append(
+                    "{0}\nQuery: {1}".format("-" * 15, log["content"])
+                )
+            else:
+                logs_formatted.append(log["content"])
 
-                # Write logs
-                with open(save_loc, "w") as outfile:
-                    outfile.write("\n".join(logs_formatted))
-                    outfile.close()
-                    print("Saved logs to {0}".format(save_loc))
+        # Write logs
+        with open(save_loc, "w") as outfile:
+            outfile.write("\n".join(logs_formatted))
+            outfile.close()
+            print("Saved logs to {0}".format(save_loc))
