@@ -4,8 +4,8 @@ CMD:=poetry run
 MODEL_DIR:=src/hephaestus/models
 
 ruff:
-	$(CMD) ruff check --fix src
-	$(CMD) ruff format src
+	@$(CMD) ruff check --fix src
+	@$(CMD) ruff format src
 
 create_models: $(MODEL_DIR)/Modelfile_*
 	@for file in $^ ; do \
