@@ -12,13 +12,22 @@ from gpt4all import GPT4All
 
 class Hephaestus:
     def __init__(self):
+        """
+        Creates a new Hephaestus object
+        """
         self._reset_logs()
 
     def _reset_logs(self):
+        """
+        Resets the logs to empty
+        """
         # Initialize logs
         self.logs = []
 
     def _reformat_logs(self):
+        """
+        Reformats the logs from ollama's format to a more user-friendly one for saving
+        """
         # Reformat logs
         logs_formatted = []
         for log in self.logs:
@@ -33,6 +42,9 @@ class Hephaestus:
         self.logs = logs_formatted
 
     def _save_logs(self):
+        """
+        Saves the logs to a text file
+        """
         # Get save location
         save_loc = input("Save location (leave blank for auto generated location): ")
         while len(save_loc) > 0 and not save_loc.endswith(".txt"):
@@ -52,7 +64,7 @@ class Hephaestus:
 
     def forge(self, model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
         """
-        Simple AI query tool that can use a specific model
+        AI query tool that can use a specific model using gpt4all
 
         :param model_version:
         str: The model to use in the query
@@ -94,6 +106,12 @@ class Hephaestus:
                 self._save_logs()
 
     def hammer(self, model_version: str = "devops_engineer"):
+        """
+        AI query tool that can use a specific model using ollama
+
+        :param model_version:
+        str: The model to use in the query
+        """
         # Get user's query
         query = input("Query: ")
 
