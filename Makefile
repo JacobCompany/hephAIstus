@@ -8,7 +8,7 @@ ruff:
 	$(CMD) ruff format src
 
 create_models: $(MODEL_DIR)/Modelfile_*
-	for file in $^ ; do \
+	@for file in $^ ; do \
 		MODEL_NAME=$$(echo "$${file//src\/hephaestus\/models\/Modelfile_}"); \
 		$(CMD) ollama create $$MODEL_NAME -f "./$${file}"; \
 	done
