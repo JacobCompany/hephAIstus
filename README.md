@@ -12,7 +12,8 @@ The first AI model is `forge` and it uses `gpt4all`. To use it, simply run the f
 
 ```python
 from hephaestus import Hephaestus
-Hephaestus.forge()
+heph = Hephaestus()
+heph.forge()
 ```
 
 This will then start a conversation with an AI bot. You can specify the AI model to use with the `model_version` parameter in `forge`. If no
@@ -26,7 +27,8 @@ Alternatively, you can use `ollama` with `hammer`. To use it, simply run the fol
 
 ```python
 from hephaestus import Hephaestus
-Hephaestus.hammer()
+heph = Hephaestus()
+heph.hammer()
 ```
 
 This will then start a conversation with an AI bot. You can specify the AI model to use with the `model_version` parameter in `forge`. If no
