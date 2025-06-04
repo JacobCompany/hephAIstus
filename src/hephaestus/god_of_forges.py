@@ -137,7 +137,7 @@ class Hephaestus:
                     print("{0}...".format(random.choice(waiting_messages)))
                     response = model.generate(query, max_tokens=1024) + "\n"
                     self.logs.append(response)
-                    print(response)
+                    print("{0}\n{1}".format("-"*15, response))
 
                     # Get user's query
                     query = input("Query: ")
@@ -180,7 +180,7 @@ class Hephaestus:
                 self.logs.append(
                     {"role": "assistant", "content": response.message.content}
                 )
-                print(response.message.content)
+                print("{0}\n{1}".format("-"*15, response.message.content))
 
                 # Get user's query
                 query = input("\nQuery: ")
