@@ -8,10 +8,11 @@ These models use `gpt4all` and `ollama`.
 
 ## Hephaestus' Forge
 
-The first AI model is `forge` and it uses `gpt4all`. To use it, simply run the following commands in a Python terminal.
+The first AI model is `forge()` and it uses `gpt4all`. To use it, simply run the following commands in a Python terminal.
 
 ```python
 from hephaestus import Hephaestus
+
 heph = Hephaestus()
 heph.forge()
 ```
@@ -23,10 +24,11 @@ After the conversation is finished, the user can save the results to a text file
 
 ## Hephaestus' Hammer
 
-Alternatively, you can use `ollama` with `hammer`. To use it, simply run the following commands in a Python terminal.
+Alternatively, you can use `ollama` with `hammer()`. To use it, simply run the following commands in a Python terminal.
 
 ```python
 from hephaestus import Hephaestus
+
 heph = Hephaestus()
 heph.hammer()
 ```
@@ -38,3 +40,10 @@ To use one of the provided AI models (found in `src/hephaestus/models`), run `ma
 initialized.
 
 After the conversation is finished, the user can save the results to a text file.
+
+### Continue chat
+
+You can continue a previous conversation, from either `forge()` or `hammer()`, by running `load_save(file_name)`. This will then load a
+previously saved conversation to be used by `hammer()`. 
+
+Note, `forge()` does not allow a conversation to be continued like this. 
