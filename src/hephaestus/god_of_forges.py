@@ -57,7 +57,10 @@ class Hephaestus:
         # Reformat logs
         logs_formatted = []
         for log in self.logs:
-            if log["role"] == "user":
+            if not isinstance(log, dict) or "role" not in log or "content" not in log:
+                print("Cannot reformat logs")
+                return
+            elif log["role"] == "user":
                 logs_formatted.append(
                     "{0}\nQuery: {1}\n{0}".format("-" * 15, log["content"])
                 )
