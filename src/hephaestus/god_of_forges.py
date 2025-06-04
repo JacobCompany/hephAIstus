@@ -59,7 +59,7 @@ class Hephaestus:
         for log in self.logs:
             if log["role"] == "user":
                 logs_formatted.append(
-                    "{0}\nQuery: {1}".format("-" * 15, log["content"])
+                    "{0}\nQuery: {1}\n{0}".format("-" * 15, log["content"])
                 )
             else:
                 logs_formatted.append(log["content"])
@@ -131,7 +131,7 @@ class Hephaestus:
                 # Check that user doesn't want to exit
                 while query.lower() not in exit_conditions:
                     # Save user query
-                    self.logs.append("{0}\nQuery: {1}".format("-" * 15, query))
+                    self.logs.append("{0}\nQuery: {1}\n{0}".format("-" * 15, query))
 
                     # Get response from model
                     print("{0}...".format(random.choice(waiting_messages)))
