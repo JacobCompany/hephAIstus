@@ -1,6 +1,7 @@
 import random
 from datetime import datetime
-from os.path import exists
+from glob import glob
+from os.path import isdir, isfile
 
 from gpt4all import GPT4All
 from ollama import chat, list
@@ -149,7 +150,7 @@ class Hephaestus:
                         [
                             "/o: Options",
                             "/q: Quit",
-                            "/f <file name> <query>: Send file to bot",
+                            "/f <file name> <query>: Send file(s) to bot",
                             "/n: Save and clear log and start a new conversation",
                         ]
                     )
@@ -163,12 +164,37 @@ class Hephaestus:
 
         # Handle file
         if query.lower().startswith("/f"):
+            # Get file name and query components
             file_name = query.split(" ")[1]
             query = " ".join(query.split(" ")[2:])
-            if not exists(file_name):
+
+            # Handle directory
+            if isdir(file_name):
+                # Ensure it is formatted correctly
+                if not file_name.endswith("/"):
+                    file_name += "/"
+                # Get all files in that directory
+                file_names = glob("{0}**".format(file_name), recursive=True)
+
+                # Get file information
+                files = []
+                for file_name in file_names:
+                    if isfile(file_name):
+                        files.append("{0}:".format(file_name))
+                        with open(file_name, "r") as input_file:
+                            try:
+                                files.append("'{0}'".format(input_file.read()))
+                            except:
+                                files.pop()
+
+                # Update query
+                query = "{0}\n{1}".format(query, "\n".join(files))
+            # Handle file is not present
+            elif not isfile(file_name):
                 print("File ({0}) does not exist".format(file_name))
                 return self._query()
             else:
+                # Get file information and update query
                 with open(file_name, "r") as input_file:
                     query = "{0}\n'{1}'".format(query, input_file.read())
 
