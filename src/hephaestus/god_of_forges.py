@@ -195,7 +195,7 @@ class Hephaestus:
         # Print out available models
         print("Available models:")
         for model in self.hammers:
-            print(model)
+            print("\t{0}".format(model))
 
     def hammer(self, model_version: str = "devops_engineer"):
         """
