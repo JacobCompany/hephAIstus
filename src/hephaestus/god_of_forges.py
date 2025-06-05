@@ -1,5 +1,6 @@
 import random
 from datetime import datetime
+from os.path import exists
 
 from gpt4all import GPT4All
 from ollama import chat, list
@@ -11,7 +12,7 @@ exit_conditions = [
     "bye",
     "good bye",
     "see ya",
-    "q",
+    "/q",
     "quit",
     "hasta la vista",
 ]
@@ -61,8 +62,7 @@ class Hephaestus:
         logs_formatted = []
         for log in self.logs:
             if not isinstance(log, dict) or "role" not in log or "content" not in log:
-                print("Cannot reformat logs")
-                return
+                raise TypeError("Cannot reformat logs")
             elif log["role"] == "user":
                 logs_formatted.append(
                     "{0}\nQuery: {1}\n{0}".format(new_query_text, log["content"])
@@ -81,10 +81,10 @@ class Hephaestus:
         default_save_loc = "{0}.txt".format(
             datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
         )
-        save_loc = input("Save location (default: {0}): ".format(default_save_loc))
+        save_loc = input("Save location (default: '{0}'): ".format(default_save_loc))
         while len(save_loc) > 0 and not save_loc.endswith(".txt"):
             save_loc = input(
-                "Save location must be .txt, not {0}\nSave location (default: {1}): ".format(
+                "Save location must be .txt, not {0}\nSave location (default: '{1}'): ".format(
                     save_loc, default_save_loc
                 )
             )
@@ -132,6 +132,60 @@ class Hephaestus:
         self.logs = logs_unformatted
         self.logs_loaded = True
 
+    def _query(self):
+        """
+        Get the query from the user
+        :return:
+        str: User's query
+        """
+        # Get user's query
+        query = input("Query (/o for options): ").strip()
+
+        # Handle options
+        if query.lower() == "/o":
+            print(
+                "Options:\n{0}".format(
+                    "\n".join(
+                        [
+                            "/o: Options",
+                            "/q: Quit",
+                            "/f <file name> <query>: Send file to bot",
+                            "/n: Save and clear log and start a new conversation",
+                        ]
+                    )
+                )
+            )
+            return self._query()
+
+        # Handle exit
+        if query.lower() in exit_conditions:
+            return "/q"
+
+        # Handle file
+        if query.lower().startswith("/f"):
+            file_name = query.split(" ")[1]
+            query = " ".join(query.split(" ")[2:])
+            if not exists(file_name):
+                print("File ({0}) does not exist".format(file_name))
+                return self._query()
+            else:
+                with open(file_name, "r") as input_file:
+                    query = "{0}\n'{1}'".format(query, input_file.read())
+
+        # Handle new conversation
+        if query.lower() == "/n":
+            try:
+                self._reformat_logs()
+            except TypeError:
+                pass
+            self._save_logs()
+            self._reset_logs()
+            return self._query()
+
+        # Print status message
+        print("{0}...".format(random.choice(waiting_messages)))
+        return query
+
     def forge(self, model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
         """
         AI query tool that can use a specific model using gpt4all
@@ -150,7 +204,7 @@ class Hephaestus:
             )
         else:
             # Get user's query
-            query = input("Query: ")
+            query = self._query()
 
             # Reset logs
             self._reset_logs()
@@ -158,20 +212,19 @@ class Hephaestus:
             # Open up chat session
             with model.chat_session():
                 # Check that user doesn't want to exit
-                while query.lower() not in exit_conditions:
+                while query.lower() != "/q":
                     # Save user query
                     self.logs.append(
                         "{0}\nQuery: {1}\n{0}".format(new_query_text, query)
                     )
 
                     # Get response from model
-                    print("{0}...".format(random.choice(waiting_messages)))
                     response = model.generate(query, max_tokens=1024) + "\n"
                     self.logs.append(response)
                     print("{0}\n{1}".format(new_query_text, response))
 
                     # Get user's query
-                    query = input("Query: ")
+                    query = self._query()
 
             # Save logs
             if input("Save logs (Y/N)? ").lower() == "y":
@@ -214,26 +267,25 @@ class Hephaestus:
             return
 
         # Get user's query
-        query = input("Query: ")
+        query = self._query()
 
         # Reset logs if fresh
         if not self.logs_loaded:
             self._reset_logs()
 
         # Check that user doesn't want to exit
-        while query.lower() not in exit_conditions:
+        while query.lower() != "/q":
             # Save user query
             self.logs.append({"role": "user", "content": query})
 
             # Get response from model
-            print("{0}...".format(random.choice(waiting_messages)))
             response = chat(model=model_version, messages=self.logs)
             # Output response
             self.logs.append({"role": "assistant", "content": response.message.content})
-            print("{0}\n{1}".format(new_query_text, response.message.content))
+            print("{0}\n{1}\n".format(new_query_text, response.message.content))
 
             # Get user's query
-            query = input("\nQuery: ")
+            query = self._query()
 
         # Save logs
         if input("Save logs (Y/N)? ").lower() == "y":
