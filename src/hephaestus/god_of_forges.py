@@ -78,15 +78,18 @@ class Hephaestus:
         Saves the logs to a text file
         """
         # Get save location
-        save_loc = input("Save location (leave blank for auto generated location): ")
+        default_save_loc = "{0}.txt".format(
+            datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+        )
+        save_loc = input("Save location (default: {0}): ".format(default_save_loc))
         while len(save_loc) > 0 and not save_loc.endswith(".txt"):
             save_loc = input(
-                "Save location must be .txt, not {0}\nSave location (leave blank for auto generated location): ".format(
-                    save_loc
+                "Save location must be .txt, not {0}\nSave location (default: {1}): ".format(
+                    save_loc, default_save_loc
                 )
             )
         if len(save_loc) == 0:
-            save_loc = "{0}.txt".format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S"))
+            save_loc = default_save_loc
 
         # Write logs
         with open(save_loc, "w") as outfile:
