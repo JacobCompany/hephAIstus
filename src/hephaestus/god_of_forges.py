@@ -2,8 +2,7 @@ import random
 from datetime import datetime
 
 from gpt4all import GPT4All
-from ollama import chat
-from ollama._types import ResponseError
+from ollama import chat, list
 
 # Define exit conditions for all functions
 exit_conditions = [
@@ -44,6 +43,7 @@ class Hephaestus:
         Creates a new Hephaestus object
         """
         self._reset_logs()
+        self._get_hammers()
 
     def _reset_logs(self):
         """
@@ -177,6 +177,26 @@ class Hephaestus:
             if input("Save logs (Y/N)? ").lower() == "y":
                 self._save_logs()
 
+    def _get_hammers(self):
+        """
+        Get a list of available ollama models on your local machine
+        """
+        # Get all models
+        models = list()
+
+        # Save models
+        self.hammers = [model.model.split(":")[0] for model in models.models]
+        self.hammers.sort()
+
+    def list_hammers(self):
+        """
+        List available ollama models on your local machine
+        """
+        # Print out available models
+        print("Available models:")
+        for model in self.hammers:
+            print(model)
+
     def hammer(self, model_version: str = "devops_engineer"):
         """
         AI query tool that can use a specific model using ollama
@@ -184,6 +204,15 @@ class Hephaestus:
         :param model_version:
         str: The model to use in the query
         """
+        # Check that model is available
+        if model_version not in self.hammers:
+            print(
+                "Model ('{0}') was not found, please provide a different model.".format(
+                    model_version
+                )
+            )
+            return
+
         # Get user's query
         query = input("Query: ")
 
@@ -198,23 +227,13 @@ class Hephaestus:
 
             # Get response from model
             print("{0}...".format(random.choice(waiting_messages)))
-            try:
-                response = chat(model=model_version, messages=self.logs)
-            except ResponseError:
-                print(
-                    "Model ('{0}') was not found, please provide a different model.".format(
-                        model_version
-                    )
-                )
-            else:
-                # Output response
-                self.logs.append(
-                    {"role": "assistant", "content": response.message.content}
-                )
-                print("{0}\n{1}".format(new_query_text, response.message.content))
+            response = chat(model=model_version, messages=self.logs)
+            # Output response
+            self.logs.append({"role": "assistant", "content": response.message.content})
+            print("{0}\n{1}".format(new_query_text, response.message.content))
 
-                # Get user's query
-                query = input("\nQuery: ")
+            # Get user's query
+            query = input("\nQuery: ")
 
         # Save logs
         if input("Save logs (Y/N)? ").lower() == "y":
