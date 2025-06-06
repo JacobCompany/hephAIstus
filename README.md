@@ -43,7 +43,7 @@ This will then start a conversation with an AI bot. You can specify the AI model
 model is specified, then it will use the default.
 
 To use one of the provided AI models (found in `src/hephaistus/models`), run `make create_models` and all relevant models will be
-initialized.
+initialized. Alternatively, see the below section (`Create Models`) about how to do this with HephAIstus.
 
 After the conversation is finished, the user can save the results to a text file.
 
@@ -63,6 +63,6 @@ You can then see the available models on your local machine by running `heph.lis
 ### Continue chat
 
 You can continue a previous conversation, from either `forge()` or `hammer()`, by running `load_save(file_name)`. This will then load a
-previously saved conversation to be used by `hammer()`. 
+previously saved conversation to be used by `hammer()`.
 
 Note, `forge()` does not allow a conversation to be continued like this. 
