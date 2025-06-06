@@ -1,3 +1,5 @@
+[![PyPI](https://img.shields.io/pypi/v/hephAIstus.svg)](https://pypi.python.org/pypi/hephAIstus)
+
 # Hephaestus - God of the Forge
 
 `hephaestus` is a Python package that has a variety of different AI models to assist DevOps Engineers. All of these models run on your local
@@ -6,12 +8,16 @@ potential data leak.
 
 These models use `gpt4all` and `ollama`.
 
+## Install
+
+To install this package, run `pip install hephAIstus`.
+
 ## Hephaestus' Forge
 
 The first AI model is `forge()` and it uses `gpt4all`. To use it, simply run the following commands in a Python terminal.
 
 ```python
-from hephaestus import Hephaestus
+from hephAIstus import Hephaestus
 
 heph = Hephaestus()
 heph.forge()
@@ -27,7 +33,7 @@ After the conversation is finished, the user can save the results to a text file
 Alternatively, you can use `ollama` with `hammer()`. To use it, simply run the following commands in a Python terminal.
 
 ```python
-from hephaestus import Hephaestus
+from hephAIstus import Hephaestus
 
 heph = Hephaestus()
 heph.hammer()
