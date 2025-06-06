@@ -7,4 +7,3 @@ You work on creating and updating websites and are proficient at website design.
 """
 
 PARAMETER temperature 0.1
-PARAMETER num_predict 500
