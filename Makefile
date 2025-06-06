@@ -1,7 +1,7 @@
 .PHONY: format create_models
 
 CMD:=poetry run
-MODEL_DIR:=src/hephaestus/models
+MODEL_DIR:=src/hephAIstus/models
 
 format:
 	@$(CMD) ruff check --fix src
@@ -10,6 +10,6 @@ format:
 
 create_models: $(MODEL_DIR)/Modelfile_*
 	@for file in $^ ; do \
-		MODEL_NAME=$$(echo "$${file//src\/hephaestus\/models\/Modelfile_}"); \
+		MODEL_NAME=$$(echo "$${file//src\/hephAIstus\/models\/Modelfile_}"); \
 		$(CMD) ollama create $$MODEL_NAME -f "./$${file}"; \
 	done
