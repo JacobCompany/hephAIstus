@@ -1,6 +1,6 @@
 [project]
 name = "hephaestus"
-version = "0.1.1"
+version = "1.0.0"
 description = "AI tools and models for DevOps Engineers"
 authors = [
     {name = "JacobCompany",email = "jacob.gross@health-union.com"}
