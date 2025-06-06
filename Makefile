@@ -8,6 +8,11 @@ format:
 	@$(CMD) ruff format src
 	@$(CMD) isort src
 
+format_check:
+	@$(CMD) ruff check src
+	@$(CMD) ruff format --diff src
+	@$(CMD) isort --check-only src
+
 create_models: $(MODEL_DIR)/Modelfile_*
 	@for file in $^ ; do \
 		MODEL_NAME=$$(echo "$${file//src\/hephaistus\/models\/Modelfile_}"); \
