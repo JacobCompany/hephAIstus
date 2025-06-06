@@ -1,4 +1,4 @@
-from .god_of_forges import Hephaestus
+from .god_of_forges import HephAIstus
 
-__version__ = "1.0.1"
-__all__ = ["Hephaestus"]
+__version__ = "1.1.0"
+__all__ = ["HephAIstus"]
