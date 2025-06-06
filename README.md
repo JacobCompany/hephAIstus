@@ -1,4 +1,4 @@
-[![PyPI](https://img.shields.io/pypi/v/hephAIstus.svg)](https://pypi.python.org/pypi/hephAIstus)
+[![PyPI](https://img.shields.io/pypi/v/hephaistus.svg)](https://pypi.python.org/pypi/hephAIstus)
 
 # Hephaestus - God of the Forge
 
