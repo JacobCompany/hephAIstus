@@ -1,7 +1,7 @@
 [project]
 name = "hephAIstus"
-version = "1.0.0"
-description = "AI tools and models for DevOps Engineers"
+version = "1.0.1"
+description = "Local AI tools and models for DevOps Engineers"
 authors = [
     {name = "JacobCompany",email = "jacob.gross@health-union.com"}
 ]
