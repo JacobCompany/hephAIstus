@@ -22,8 +22,10 @@ def read_file(file_name: str):
     if file_name.endswith(".pdf"):
         for page in PdfReader(file_name).pages:
             text.append(page.extract_text())
+    # Read file and extract text
     else:
         with open(file_name, "r") as input_file:
             text.append(input_file.read())
 
+    print("Read {0}".format(file_name))
     return "\n".join(text)
