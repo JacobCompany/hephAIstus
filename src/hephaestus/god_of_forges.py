@@ -83,14 +83,10 @@ class Hephaestus:
             datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
         )
         save_loc = input("Save location (default: '{0}'): ".format(default_save_loc))
-        while len(save_loc) > 0 and not save_loc.endswith(".txt"):
-            save_loc = input(
-                "Save location must be .txt, not {0}\nSave location (default: '{1}'): ".format(
-                    save_loc, default_save_loc
-                )
-            )
         if len(save_loc) == 0:
             save_loc = default_save_loc
+        if not save_loc.endswith(".txt"):
+            save_loc += ".txt"
 
         # Write logs
         with open(save_loc, "w") as outfile:
