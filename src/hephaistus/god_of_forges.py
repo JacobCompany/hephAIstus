@@ -5,6 +5,7 @@ from os.path import isdir, isfile
 
 import ollama
 from gpt4all import GPT4All
+
 from .utils import read_file
 
 # Define exit conditions for all functions
