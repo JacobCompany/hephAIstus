@@ -6,6 +6,8 @@ from os.path import isdir, isfile
 import ollama
 from gpt4all import GPT4All
 
+from .utils import read_file
+
 # Define exit conditions for all functions
 exit_conditions = [
     "exit",
@@ -175,13 +177,11 @@ class HephAIstus:
                 # Get file information
                 files = []
                 for file_name in file_names:
-                    if isfile(file_name):
-                        files.append("{0}:".format(file_name))
-                        with open(file_name, "r") as input_file:
-                            try:
-                                files.append("'{0}'".format(input_file.read()))
-                            except:  # noqa: E722
-                                files.pop()
+                    files.append("{0}:".format(file_name))
+                    try:
+                        files.append("'{0}'".format(read_file(file_name)))
+                    except:  # noqa: E722
+                        files.pop()
 
                 # Update query
                 query = "{0}\n{1}".format(query, "\n".join(files))
@@ -191,8 +191,7 @@ class HephAIstus:
                 return self._query()
             else:
                 # Get file information and update query
-                with open(file_name, "r") as input_file:
-                    query = "{0}\n'{1}'".format(query, input_file.read())
+                query = "{0}\n'{1}'".format(query, read_file(file_name))
 
         # Handle new conversation
         if query.lower() == "/n":

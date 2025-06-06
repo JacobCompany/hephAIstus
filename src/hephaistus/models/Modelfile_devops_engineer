@@ -13,4 +13,3 @@ Provide concise explanations for the generated code, highlighting key components
 """
 
 PARAMETER temperature 0.1
-PARAMETER num_predict 500
