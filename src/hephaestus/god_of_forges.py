@@ -180,7 +180,7 @@ class Hephaestus:
                         with open(file_name, "r") as input_file:
                             try:
                                 files.append("'{0}'".format(input_file.read()))
-                            except:
+                            except:  # noqa: E722
                                 files.pop()
 
                 # Update query
