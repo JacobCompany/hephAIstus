@@ -3,8 +3,8 @@ from datetime import datetime
 from glob import glob
 from os.path import isdir, isfile
 
+import ollama
 from gpt4all import GPT4All
-from ollama import chat, list
 
 # Define exit conditions for all functions
 exit_conditions = [
@@ -39,10 +39,10 @@ waiting_messages = [
 new_query_text = "-" * 15
 
 
-class Hephaestus:
+class HephAIstus:
     def __init__(self):
         """
-        Creates a new Hephaestus object
+        Creates a new HephAIstus object
         """
         self._reset_logs()
         self._get_hammers()
@@ -257,7 +257,7 @@ class Hephaestus:
         Get a list of available ollama models on your local machine
         """
         # Get all models
-        models = list()
+        models = ollama.list()
 
         # Save models
         self.hammers = [model.model.split(":")[0] for model in models.models]
@@ -271,6 +271,83 @@ class Hephaestus:
         print("Available models:")
         for model in self.hammers:
             print("\t{0}".format(model))
+
+    def create_hammers(self, model_loc: str = None, delete_from: bool = True):
+        """
+        Create all custom ollama models found on models folder
+
+        :param model_loc:
+        str: Optional location for the models. If not set, then will create the custom models in `src/hephaistus/models`
+        :param delete_from:
+        bool: If True, deletes FROM models for custom models.
+        """
+        # Get model files
+        if model_loc is None:
+            model_files = glob(
+                "{0}/models/Modelfile_*".format("/".join(__file__.split("/")[:-1]))
+            )
+        else:
+            if isdir(model_loc):
+                model_files = glob("{0}/Modelfile_*".format(model_loc))
+            elif isfile(model_loc):
+                model_files = glob(model_loc)
+            else:
+                raise ValueError(
+                    "Model location is not a directory/file: '{0}'".format(model_loc)
+                )
+
+        # Initialize from models
+        from_models = []
+
+        # Run through each model file
+        for model_file in model_files:
+            # Get name for the model from the file name
+            model_name = model_file.split("/")[-1].replace("Modelfile_", "")
+
+            # Get information from Modelfile
+            params = {}
+            with open(model_file, "r+") as input_file:
+                # Run through each line of file
+                for line in input_file:
+                    # Format line
+                    line = line.strip()
+
+                    # Get from
+                    if line.startswith("FROM"):
+                        params["from_"] = line.split(" ")[1]
+                    # Get parameters
+                    elif line.startswith("PARAMETER"):
+                        key = line.split(" ")[1]
+                        value = float(line.split(" ")[2])
+                        if "parameters" not in params:
+                            params["parameters"] = {key: value}
+                        else:
+                            params["parameters"][key] = value
+                    # Get system
+                    elif line.startswith("SYSTEM"):
+                        # Get end of SYSTEM setup
+                        lines = [line]
+                        next_line = next(input_file).strip()
+                        while not next_line.startswith('"""'):
+                            lines.append(next_line)
+                            next_line = next(input_file).strip()
+                        params["system"] = "\n".join(lines)
+
+            # Create model
+            ollama.create(model=model_name, **params)
+            print("Created {0}".format(model_name))
+
+            # Save from model to clean-up afterward
+            if delete_from:
+                from_models.append(params["from_"])
+
+        # Delete from models
+        for from_model in list(set(from_models)):
+            ollama.delete(from_model)
+            print("Deleted {0}".format(from_model))
+
+        # Update hammer list
+        self._get_hammers()
 
     def hammer(self, model_version: str = "devops_engineer"):
         """
@@ -301,7 +378,7 @@ class Hephaestus:
             self.logs.append({"role": "user", "content": query})
 
             # Get response from model
-            response = chat(model=model_version, messages=self.logs)
+            response = ollama.chat(model=model_version, messages=self.logs)
             # Output response
             self.logs.append({"role": "assistant", "content": response.message.content})
             print("{0}\n{1}\n".format(new_query_text, response.message.content))
