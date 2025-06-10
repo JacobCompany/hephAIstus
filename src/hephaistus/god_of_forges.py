@@ -6,7 +6,7 @@ from os.path import isdir, isfile
 import ollama
 from gpt4all import GPT4All
 
-from .utils import read_file
+from .utils import read_file, reformat_logs
 
 # Define exit conditions for all functions
 exit_conditions = [
@@ -61,20 +61,8 @@ class HephAIstus:
         """
         Reformats the logs from ollama's format to a more user-friendly one for saving
         """
-        # Reformat logs
-        logs_formatted = []
-        for log in self.logs:
-            if not isinstance(log, dict) or "role" not in log or "content" not in log:
-                raise TypeError("Cannot reformat logs")
-            elif log["role"] == "user":
-                logs_formatted.append(
-                    "{0}\nQuery: {1}\n{0}".format(new_query_text, log["content"])
-                )
-            else:
-                logs_formatted.append(log["content"])
-
         # Update logs
-        self.logs = logs_formatted
+        self.logs = reformat_logs(self.logs, new_query_text)
 
     def _save_logs(self):
         """
