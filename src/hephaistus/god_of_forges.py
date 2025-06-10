@@ -263,6 +263,7 @@ class HephAIstus:
         for model_file in model_files:
             # Get name for the model from the file name
             model_name = model_file.split("/")[-1].replace("Modelfile_", "")
+            print("Creating {0}".format(model_name), end="\r")
 
             # Get information from Modelfile
             params = {}
@@ -295,7 +296,7 @@ class HephAIstus:
 
             # Create model
             ollama.create(model=model_name, **params)
-            print("Created {0}".format(model_name))
+            print("Created {0}                ".format(model_name))
 
             # Save from model to clean-up afterward
             if delete_from:
