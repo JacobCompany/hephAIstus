@@ -1,5 +1,6 @@
 from os.path import isfile
 
+import pandas as pd
 from pypdf import PdfReader
 
 
@@ -22,6 +23,9 @@ def read_file(file_name: str):
     if file_name.endswith(".pdf"):
         for page in PdfReader(file_name).pages:
             text.append(page.extract_text())
+    # Handle CSVs
+    elif file_name.endswith(".csv"):
+        text.append(pd.read_csv(file_name).to_string())
     # Read file and extract text
     else:
         with open(file_name, "r") as input_file:
