@@ -1,6 +1,7 @@
 from os.path import isfile
 
 import pandas as pd
+from pptx import Presentation
 from pypdf import PdfReader
 
 
@@ -26,6 +27,14 @@ def read_file(file_name: str):
     # Handle CSVs
     elif file_name.endswith(".csv"):
         text.append(pd.read_csv(file_name).to_string())
+    # Handle pptx
+    elif file_name.endswith(".pptx"):
+        for slide in Presentation(file_name).slides:
+            if not slide.has_text_frame:
+                continue
+            for paragraph in slide.text_frame.paragraphs:
+                for run in paragraph.runs:
+                    text.append(run.text)
     # Read file and extract text
     else:
         with open(file_name, "r") as input_file:
