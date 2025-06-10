@@ -1,6 +1,7 @@
 from os.path import isfile
 
 import pandas as pd
+from docx import Document
 from pptx import Presentation
 from pypdf import PdfReader
 
@@ -35,6 +36,11 @@ def read_file(file_name: str):
             for paragraph in slide.text_frame.paragraphs:
                 for run in paragraph.runs:
                     text.append(run.text)
+    # Handle docx
+    elif file_name.endswith(".docx"):
+        for paragraph in Document(file_name).paragraphs:
+            for run in paragraph.runs:
+                text.append(run.text)
     # Read file and extract text
     else:
         with open(file_name, "r") as input_file:
