@@ -6,7 +6,7 @@ from os.path import isdir, isfile
 import ollama
 from gpt4all import GPT4All
 
-from .utils import read_file
+from .utils import read_file, reformat_logs, unformat_logs
 
 # Define exit conditions for all functions
 exit_conditions = [
@@ -55,34 +55,23 @@ class HephAIstus:
         """
         # Initialize logs
         self.logs = []
-        self.logs_loaded = False
-
-    def _reformat_logs(self):
-        """
-        Reformats the logs from ollama's format to a more user-friendly one for saving
-        """
-        # Reformat logs
-        logs_formatted = []
-        for log in self.logs:
-            if not isinstance(log, dict) or "role" not in log or "content" not in log:
-                raise TypeError("Cannot reformat logs")
-            elif log["role"] == "user":
-                logs_formatted.append(
-                    "{0}\nQuery: {1}\n{0}".format(new_query_text, log["content"])
-                )
-            else:
-                logs_formatted.append(log["content"])
-
-        # Update logs
-        self.logs = logs_formatted
+        self.logs_loc = None
 
     def _save_logs(self):
         """
         Saves the logs to a text file
         """
+        # Try to reformat logs
+        try:
+            self.logs = reformat_logs(self.logs, new_query_text)
+        except TypeError:
+            pass
+
         # Get save location
-        default_save_loc = "{0}.txt".format(
-            datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+        default_save_loc = (
+            "{0}.txt".format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S"))
+            if self.logs_loc is None
+            else self.logs_loc
         )
         save_loc = input("Save location (default: '{0}'): ".format(default_save_loc))
         if len(save_loc) == 0:
@@ -100,36 +89,11 @@ class HephAIstus:
         """
         Loads logs to be used by ollama
         """
-        # Reset logs
-        self._reset_logs()
-
-        # Initialize logs
-        logs_unformatted = []
-
         # Open the log file
         with open(file_name, "r") as input_file:
-            # Read the entire log file
-            logs_file = input_file.read()
-            # Run through each query/response
-            for content in logs_file.split(new_query_text):
-                # Strip content
-                content = content.strip()
-
-                # Ensure there is actually a query/response
-                if len(content) > 0:
-                    # Get role
-                    if content.startswith("Query: "):
-                        role = "user"
-                        content = content.replace("Query: ", "")
-                    else:
-                        role = "assistant"
-
-                    # Add query/response
-                    logs_unformatted.append({"role": role, "content": content})
-
-        # Update logs
-        self.logs = logs_unformatted
-        self.logs_loaded = True
+            # Update logs
+            self.logs = unformat_logs(input_file.read(), new_query_text)
+            self.logs_loc = file_name
 
     def _query(self):
         """
@@ -180,7 +144,7 @@ class HephAIstus:
                     files.append("{0}:".format(file_name))
                     try:
                         files.append("'{0}'".format(read_file(file_name)))
-                    except:  # noqa: E722
+                    except ValueError:
                         files.pop()
 
                 # Update query
@@ -195,11 +159,8 @@ class HephAIstus:
 
         # Handle new conversation
         if query.lower() == "/n":
-            try:
-                self._reformat_logs()
-            except TypeError:
-                pass
-            self._save_logs()
+            if input("Save logs (Y/N)? ").lower() == "y":
+                self._save_logs()
             self._reset_logs()
             return self._query()
 
@@ -209,14 +170,17 @@ class HephAIstus:
 
     def forge(self, model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
         """
-        AI query tool that can use a specific model using gpt4all
+        AI query tool that can use a specific model using gpt4all.
+        Models are stored in /Users/<USER NAME>/.cache/gpt4all
 
         :param model_version:
         str: The model to use in the query
         """
         # Initialize model
         try:
+            print("Loading model ({0})".format(model_version), end="\r")
             model = GPT4All(model_version)
+            print("Loaded model    {0}".format(" " * len(model_version)))
         except ValueError:
             print(
                 "Model ('{0}') was not found, please provide a different model.".format(
@@ -302,6 +266,7 @@ class HephAIstus:
         for model_file in model_files:
             # Get name for the model from the file name
             model_name = model_file.split("/")[-1].replace("Modelfile_", "")
+            print("Creating {0}".format(model_name), end="\r")
 
             # Get information from Modelfile
             params = {}
@@ -334,7 +299,7 @@ class HephAIstus:
 
             # Create model
             ollama.create(model=model_name, **params)
-            print("Created {0}".format(model_name))
+            print("Created {0} ".format(model_name))
 
             # Save from model to clean-up afterward
             if delete_from:
@@ -367,9 +332,11 @@ class HephAIstus:
         # Get user's query
         query = self._query()
 
-        # Reset logs if fresh
-        if not self.logs_loaded:
+        # Get new logs or already loaded logs
+        if self.logs_loc is None:
             self._reset_logs()
+        else:
+            self.load_logs(self.logs_loc)
 
         # Check that user doesn't want to exit
         while query.lower() != "/q":
@@ -387,5 +354,4 @@ class HephAIstus:
 
         # Save logs
         if input("Save logs (Y/N)? ").lower() == "y":
-            self._reformat_logs()
             self._save_logs()

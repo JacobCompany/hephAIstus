@@ -1,4 +1,6 @@
+import importlib.metadata
+
 from .god_of_forges import HephAIstus
 
-__version__ = "1.2.0"
+__version__ = importlib.metadata.version(__package__)
 __all__ = ["HephAIstus"]
