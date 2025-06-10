@@ -144,7 +144,7 @@ class HephAIstus:
                     files.append("{0}:".format(file_name))
                     try:
                         files.append("'{0}'".format(read_file(file_name)))
-                    except:  # noqa: E722
+                    except ValueError:
                         files.pop()
 
                 # Update query

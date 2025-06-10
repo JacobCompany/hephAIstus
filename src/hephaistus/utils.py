@@ -43,8 +43,11 @@ def read_file(file_name: str):
                 text.append(run.text)
     # Read file and extract text
     else:
-        with open(file_name, "r") as input_file:
-            text.append(input_file.read())
+        try:
+            with open(file_name, "r") as input_file:
+                text.append(input_file.read())
+        except Exception:
+            raise ValueError("File could not be read: {0}".format(file_name))
 
     print("Read {0}".format(file_name))
     return "\n".join(text)
