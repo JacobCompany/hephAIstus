@@ -7,7 +7,7 @@ authors = [
 ]
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.11"
+requires-python = "<4.0,>=3.11"
 dependencies = [
     "gpt4all (>=2.8,<3.0)",
     "ollama (>=0.5,<1.0)",
