@@ -177,7 +177,9 @@ class HephAIstus:
         """
         # Initialize model
         try:
+            print("Loading model ({0})".format(model_version), end="\r")
             model = GPT4All(model_version)
+            print("Loaded model    {0}".format(" " * len(model_version)))
         except ValueError:
             print(
                 "Model ('{0}') was not found, please provide a different model.".format(
@@ -296,7 +298,7 @@ class HephAIstus:
 
             # Create model
             ollama.create(model=model_name, **params)
-            print("Created {0}                ".format(model_name))
+            print("Created {0} ".format(model_name))
 
             # Save from model to clean-up afterward
             if delete_from:
