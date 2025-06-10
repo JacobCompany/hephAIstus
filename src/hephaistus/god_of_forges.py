@@ -57,17 +57,16 @@ class HephAIstus:
         self.logs = []
         self.logs_loc = None
 
-    def _reformat_logs(self):
-        """
-        Reformats the logs from ollama's format to a more user-friendly one for saving
-        """
-        # Update logs
-        self.logs = reformat_logs(self.logs, new_query_text)
-
     def _save_logs(self):
         """
         Saves the logs to a text file
         """
+        # Try to reformat logs
+        try:
+            self.logs = reformat_logs(self.logs, new_query_text)
+        except TypeError:
+            pass
+
         # Get save location
         default_save_loc = (
             "{0}.txt".format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S"))
@@ -161,10 +160,6 @@ class HephAIstus:
         # Handle new conversation
         if query.lower() == "/n":
             if input("Save logs (Y/N)? ").lower() == "y":
-                try:
-                    self._reformat_logs()
-                except TypeError:
-                    pass
                 self._save_logs()
             self._reset_logs()
             return self._query()
@@ -355,5 +350,4 @@ class HephAIstus:
 
         # Save logs
         if input("Save logs (Y/N)? ").lower() == "y":
-            self._reformat_logs()
             self._save_logs()
