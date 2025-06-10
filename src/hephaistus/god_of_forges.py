@@ -6,7 +6,7 @@ from os.path import isdir, isfile
 import ollama
 from gpt4all import GPT4All
 
-from .utils import read_file, reformat_logs
+from .utils import read_file, reformat_logs, unformat_logs
 
 # Define exit conditions for all functions
 exit_conditions = [
@@ -90,36 +90,11 @@ class HephAIstus:
         """
         Loads logs to be used by ollama
         """
-        # Reset logs
-        self._reset_logs()
-
-        # Initialize logs
-        logs_unformatted = []
-
         # Open the log file
         with open(file_name, "r") as input_file:
-            # Read the entire log file
-            logs_file = input_file.read()
-            # Run through each query/response
-            for content in logs_file.split(new_query_text):
-                # Strip content
-                content = content.strip()
-
-                # Ensure there is actually a query/response
-                if len(content) > 0:
-                    # Get role
-                    if content.startswith("Query: "):
-                        role = "user"
-                        content = content.replace("Query: ", "")
-                    else:
-                        role = "assistant"
-
-                    # Add query/response
-                    logs_unformatted.append({"role": role, "content": content})
-
-        # Update logs
-        self.logs = logs_unformatted
-        self.logs_loc = file_name
+            # Update logs
+            self.logs = unformat_logs(input_file.read(), new_query_text)
+            self.logs_loc = file_name
 
     def _query(self):
         """

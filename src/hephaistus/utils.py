@@ -42,16 +42,55 @@ def reformat_logs(logs: list, new_query_text: str = "-" * 15):
     :return:
     list: The reformatted logs
     """
-    # Reformat logs
+    # Initialize logs
     logs_formatted = []
+
+    # Run through each log
     for log in logs:
+        # Ensure that the log is in the correct format
         if not isinstance(log, dict) or "role" not in log or "content" not in log:
             raise TypeError("Cannot reformat logs")
+        # Get log from user format
         elif log["role"] == "user":
             logs_formatted.append(
                 "{0}\nQuery: {1}\n{0}".format(new_query_text, log["content"])
             )
+        # Get log from assistant format
         else:
             logs_formatted.append(log["content"])
 
     return logs_formatted
+
+
+def unformat_logs(logs: str, new_query_text: str = "-" * 15):
+    """
+    Unformats the logs from a string into a list of dicts with `role` and `content` keys. This can then be read in with ollama.
+
+    :param logs:
+    str: The logs from a text file
+    :param new_query_text:
+    str: Text used to break up the different queries and responses
+    :return:
+    list: The unformatted logs in the ollama log format, i.e. a list of dicts with `role` and `content` keys.
+    """
+    # Initialize logs
+    logs_unformatted = []
+
+    # Run through each query/response
+    for content in logs.split(new_query_text):
+        # Strip content
+        content = content.strip()
+
+        # Ensure there is actually a query/response
+        if len(content) > 0:
+            # Get role
+            if content.startswith("Query: "):
+                role = "user"
+                content = content.replace("Query: ", "")
+            else:
+                role = "assistant"
+
+            # Add query/response
+            logs_unformatted.append({"role": role, "content": content})
+
+    return logs_unformatted
