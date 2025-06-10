@@ -170,7 +170,8 @@ class HephAIstus:
 
     def forge(self, model_version: str = "Meta-Llama-3-8B-Instruct.Q4_0.gguf"):
         """
-        AI query tool that can use a specific model using gpt4all
+        AI query tool that can use a specific model using gpt4all.
+        Models are stored in /Users/<USER NAME>/.cache/gpt4all
 
         :param model_version:
         str: The model to use in the query
