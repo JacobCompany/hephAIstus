@@ -55,7 +55,7 @@ class HephAIstus:
         """
         # Initialize logs
         self.logs = []
-        self.logs_loaded = False
+        self.logs_loc = None
 
     def _reformat_logs(self):
         """
@@ -81,8 +81,10 @@ class HephAIstus:
         Saves the logs to a text file
         """
         # Get save location
-        default_save_loc = "{0}.txt".format(
-            datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+        default_save_loc = (
+            "{0}.txt".format(datetime.now().strftime("%Y-%m-%d-%H:%M:%S"))
+            if self.logs_loc is None
+            else self.logs_loc
         )
         save_loc = input("Save location (default: '{0}'): ".format(default_save_loc))
         if len(save_loc) == 0:
@@ -129,7 +131,7 @@ class HephAIstus:
 
         # Update logs
         self.logs = logs_unformatted
-        self.logs_loaded = True
+        self.logs_loc = file_name
 
     def _query(self):
         """
@@ -195,11 +197,12 @@ class HephAIstus:
 
         # Handle new conversation
         if query.lower() == "/n":
-            try:
-                self._reformat_logs()
-            except TypeError:
-                pass
-            self._save_logs()
+            if input("Save logs (Y/N)? ").lower() == "y":
+                try:
+                    self._reformat_logs()
+                except TypeError:
+                    pass
+                self._save_logs()
             self._reset_logs()
             return self._query()
 
@@ -368,7 +371,7 @@ class HephAIstus:
         query = self._query()
 
         # Reset logs if fresh
-        if not self.logs_loaded:
+        if self.logs_loc is None:
             self._reset_logs()
 
         # Check that user doesn't want to exit
