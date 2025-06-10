@@ -333,9 +333,11 @@ class HephAIstus:
         # Get user's query
         query = self._query()
 
-        # Reset logs if fresh
+        # Get new logs or already loaded logs
         if self.logs_loc is None:
             self._reset_logs()
+        else:
+            self.load_logs(self.logs_loc)
 
         # Check that user doesn't want to exit
         while query.lower() != "/q":
