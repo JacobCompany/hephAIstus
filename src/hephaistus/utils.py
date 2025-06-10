@@ -33,7 +33,7 @@ def read_file(file_name: str):
 
 def reformat_logs(logs: list, new_query_text: str = "-" * 15):
     """
-    Reformats the logs from ollama's format to a more user-friendly one for saving
+    Reformats the logs from ollama's format to a more user-friendly one for saving to text
 
     :param logs:
     list: A list of logs to be reformatted. Only reformats the ollama log format, i.e. a list of dicts with `role` and `content` keys.
